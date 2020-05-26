@@ -1,0 +1,14 @@
+
+	deleted by us:   CONTRIBUTORS.txt
+	both modified:   SConstruct
+	both modified:   debian/rules
+	both modified:   galera/src/replicator_smm.cpp
+	both modified:   galera/src/replicator_smm.hpp
+	both modified:   galera/src/replicator_str.cpp
+	deleted by them: galerautils/src/gu_prodcons.cpp
+	deleted by them: galerautils/src/gu_prodcons.hpp
+	both modified:   galerautils/tests/gu_fifo_test.c
+	both modified:   gcomm/src/gmcast.cpp
+	both modified:   gcs/src/gcs.cpp
+	both modified:   gcs/src/gcs_group.cpp
+	both modified:   wsrep/src
