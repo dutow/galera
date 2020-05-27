@@ -1245,30 +1245,8 @@ gcs_group_handle_join_msg  (gcs_group_t* group, const gcs_recv_msg_t* msg)
                 }
             }
             else {
-<<<<<<< HEAD
-#ifdef PXC
-                if (GCS_NODE_STATE_JOINED == sender->status) {
-                    gu_info ("%d.%d (%s): State transfer %s %d.%d (%s) complete.",
-                             sender_idx, sender->segment, sender->name, st_dir,
-                             peer_idx, peer ? peer->segment : -1, peer_name);
-                }
-                else {
-                    assert(sender->desync_count > 0);
-                    return 0; // don't deliver up
-                }
-#else
-                gu_info ("%d.%d (%s): State transfer %s %d.%d (%s) complete.",
-                         sender_idx, sender->segment, sender->name, st_dir,
-                         peer_idx, peer ? peer->segment : -1, peer_name);
-#endif /* PXC */
-||||||| 88f3e29c
-                gu_info ("%d.%d (%s): State transfer %s %d.%d (%s) complete.",
-                         sender_idx, sender->segment, sender->name, st_dir,
-                         peer_idx, peer ? peer->segment : -1, peer_name);
-=======
                 assert(sender->desync_count > 0);
                 return 0; // don't deliver up
->>>>>>> release_26.4.5
             }
         }
     }
@@ -2273,7 +2251,7 @@ gcs_group_fetch_pfs_info(
 
         strncpy(entries[i].host_name, node.name, WSREP_HOSTNAME_LENGTH);
 
-        strncpy(entries[i].uuid, node.id, WSREP_UUID_STR_LEN);
+        strncpy(entries[i].uuid, node.id, WSREP_UUID_STR_LEN + 1);
 
         strncpy(
             entries[i].status,
