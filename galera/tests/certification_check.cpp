@@ -133,12 +133,18 @@ void run_wsinfo(const WSInfo* const wsi, size_t const nws, int const version)
         galera::Certification::TestResult result(cert.append_trx(ts));
         fail_unless(result == wsi[i].result, "g: %lld res: %d exp: %d",
                     ts->global_seqno(), result, wsi[i].result);
-        /*
+        printf(
+                    "== wsi: %zu g: %ld ld: %ld eld: %ld\n",
+                    i, ts->global_seqno(), ts->depends_seqno(),
+                    wsi[i].expected_depends_seqno);
         fail_unless(ts->depends_seqno() == wsi[i].expected_depends_seqno,
                     "wsi: %zu g: %lld ld: %lld eld: %lld",
                     i, ts->global_seqno(), ts->depends_seqno(),
                     wsi[i].expected_depends_seqno);
-                    */
+        printf(
+                    "-- wsi: %zu g: %ld ld: %ld eld: %ld\n",
+                    i, ts->global_seqno(), ts->depends_seqno(),
+                    wsi[i].expected_depends_seqno);
         cert.set_trx_committed(*ts);
 
         if (ts->nbo_end() && ts->ends_nbo() != WSREP_SEQNO_UNDEFINED)

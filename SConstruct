@@ -117,7 +117,7 @@ with open(galera_script, 'w') as f:
 build_dir = ARGUMENTS.get('build_dir', '')
 
 # Debug/dbug flags
-debug = ARGUMENTS.get('debug', -1)
+debug = ARGUMENTS.get('debug', 0)
 dbug  = ARGUMENTS.get('dbug', False)
 asan = ARGUMENTS.get('asan', 0)
 

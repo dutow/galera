@@ -118,7 +118,6 @@ namespace gu
 #define log_warn  GU_LOG_CPP(gu::LOG_WARN)
 #define log_info  GU_LOG_CPP(gu::LOG_INFO)
 #define log_debug                                                       \
-    if (gu::Logger::no_debug(__FILE__, __FUNCTION__, __LINE__)) {} else \
         GU_LOG_CPP(gu::LOG_DEBUG)
 }
 

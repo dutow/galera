@@ -2630,11 +2630,16 @@ galera::ReplicatorSMM::process_conf_change(void*                    recv_ctx,
     }
 }
 
-void galera::ReplicatorSMM::drain_monitors_for_local_conf_change()
+void galera::ReplicatorSMM::drain_monitors_for_local_conf_change(const gcs_act_cchange& cc)
 {
-    wsrep_seqno_t const upto(cert_.position());
+   wsrep_seqno_t const upto(cert_.position());
     assert(upto >= last_committed());
-    if (upto >= last_committed())
+    if (cc.seqno > last_committed() && (upto != WSREP_SEQNO_UNDEFINED)) {
+        log_info << "Drain monitors from " << last_committed()
+                  << " upto current CC event " << cc.seqno;
+
+        gu_trace(drain_monitors(cc.seqno - 1));
+    } else if (upto >= last_committed())
     {
         log_debug << "Drain monitors from " << last_committed()
                   << " up to " << upto;
@@ -2670,7 +2675,7 @@ void galera::ReplicatorSMM::process_non_prim_conf_change(
     // there may be blocked appliers.
     if (not st_.corrupt())
     {
-        drain_monitors_for_local_conf_change();
+        drain_monitors_for_local_conf_change(conf);
     }
 
     update_incoming_list(*view_info);
@@ -2800,6 +2805,24 @@ void galera::ReplicatorSMM::process_st_required(
 #ifndef NDEBUG
     bool   app_waits_sst(false);
 #endif
+
+    /* Say complete cluster was force aborted (power/dc failure, etc.....)
+    In theory all nodes should have same state but this may not be true always.
+    Let's assume a situation where-in one of the node has some missing
+    write-sets. Node start processing the write-sets and eventually lands up
+    in situation when it is suppose to apply the said CC event.
+    This CC event is same one that caused JOINER to join the cluster
+    and reflect need of JOINER to do state transfer.
+    While processing CC event from IST such state transfer request should be
+    skipped but the co-ordinates especially cert position, etc.... should be
+    updated. This condition handling help detect such situation. */
+    if ((group_seqno == ist_receiver_.last_seqno())) {
+            log_info << "Supressing ST as CC " << group_seqno
+                     << " is registering self-event";
+            return;
+    }
+
+
     log_info << "State transfer required: "
              << "\n\tGroup state: " << group_uuid << ":" << group_seqno
              << "\n\tLocal state: " << state_uuid_<< ":" << last_committed();
@@ -3117,7 +3140,7 @@ void galera::ReplicatorSMM::process_prim_conf_change(void* recv_ctx,
              << ", local"
              << (ordered ? ", ordered" : ", unordered");
 
-    drain_monitors_for_local_conf_change();
+    drain_monitors_for_local_conf_change(conf);
 
     int const prev_protocol_version(protocol_version_);
 
@@ -3188,7 +3211,7 @@ void galera::ReplicatorSMM::process_prim_conf_change(void* recv_ctx,
     {
         /* if CC is ordered need to use preceding seqno */
         set_initial_position(group_uuid, group_seqno - ordered);
-        gcache_.seqno_reset(gu::GTID(group_uuid, group_seqno - ordered));
+        gcache_.seqno_reset(gu::GTID(group_uuid, group_seqno - ordered), true);
     }
     else
     {

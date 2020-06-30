@@ -13,7 +13,7 @@
 
 using namespace galera;
 
-static const bool cert_debug_on(false);
+static const bool cert_debug_on(true);
 #define cert_debug                              \
     if (cert_debug_on == false) { }             \
     else log_info << "cert debug: "
@@ -32,7 +32,7 @@ static std::string const CERT_PARAM_LENGTH_CHECK (CERT_PARAM_PREFIX +
                                                   "length_check");
 
 static std::string const CERT_PARAM_LOG_CONFLICTS_DEFAULT("no");
-static std::string const CERT_PARAM_OPTIMISTIC_PA_DEFAULT("no");
+static std::string const CERT_PARAM_OPTIMISTIC_PA_DEFAULT("yes");
 
 /*** It is EXTREMELY important that these constants are the same on all nodes.
  *** Don't change them ever!!! ***/

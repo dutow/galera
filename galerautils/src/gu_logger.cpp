@@ -121,7 +121,7 @@ namespace gu
     };
 
     bool        Logger::do_timestamp = false;
-    LogLevel    Logger::max_level    = LOG_INFO;
+    LogLevel    Logger::max_level    = LOG_DEBUG;
     LogCallback Logger::logger       = default_logger;
 #else
 #define do_timestamp       gu_log_self_tstamp == true

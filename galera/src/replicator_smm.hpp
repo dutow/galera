@@ -456,7 +456,7 @@ namespace galera
             }
         }
         // Helpers for configuration change processing
-        void drain_monitors_for_local_conf_change();
+        void drain_monitors_for_local_conf_change(const gcs_act_cchange& cc);
         void process_non_prim_conf_change(void* recv_ctx,
                                           const gcs_act_cchange&,
                                           int my_index);
