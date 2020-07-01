@@ -2633,6 +2633,9 @@ galera::ReplicatorSMM::process_conf_change(void*                    recv_ctx,
 void galera::ReplicatorSMM::drain_monitors_for_local_conf_change(const gcs_act_cchange& cc)
 {
    wsrep_seqno_t const upto(cert_.position());
+        log_info << "Maybe drain monitors from " << last_committed()
+                  << " upto current CC event " << cc.seqno
+                  << " upto:" << upto;
     assert(upto >= last_committed());
     if (cc.seqno > last_committed() && (upto != WSREP_SEQNO_UNDEFINED)) {
         log_info << "Drain monitors from " << last_committed()
@@ -2641,7 +2644,7 @@ void galera::ReplicatorSMM::drain_monitors_for_local_conf_change(const gcs_act_c
         gu_trace(drain_monitors(cc.seqno - 1));
     } else if (upto >= last_committed())
     {
-        log_debug << "Drain monitors from " << last_committed()
+        log_info << "Drain monitors from " << last_committed()
                   << " up to " << upto;
         gu_trace(drain_monitors(upto));
     }
@@ -2889,7 +2892,8 @@ void galera::ReplicatorSMM::process_st_required(
     free(app_req);
 
     if(!error) {
-      finish_local_prim_conf_change(group_proto_ver, group_seqno, "sst");
+      // The actual SST seqno can be different than what we requested!
+      finish_local_prim_conf_change(group_proto_ver, sst_seqno_, "sst");
     }
     // No need to submit view info. It is always contained either
     // in SST or applied in IST.
