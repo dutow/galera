@@ -2637,12 +2637,12 @@ void galera::ReplicatorSMM::drain_monitors_for_local_conf_change(const gcs_act_c
                   << " upto current CC event " << cc.seqno
                   << " upto:" << upto;
     assert(upto >= last_committed());
-    if (cc.seqno > last_committed() && (upto != WSREP_SEQNO_UNDEFINED)) {
+    /*if (cc.seqno > last_committed() && (upto != WSREP_SEQNO_UNDEFINED)) {
         log_info << "Drain monitors from " << last_committed()
                   << " upto current CC event " << cc.seqno;
 
         gu_trace(drain_monitors(cc.seqno - 1));
-    } else if (upto >= last_committed())
+    } else */if (upto >= last_committed())
     {
         log_info << "Drain monitors from " << last_committed()
                   << " up to " << upto;
