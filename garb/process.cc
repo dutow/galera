@@ -56,7 +56,7 @@ void process::execute(const char *type, char **env) {
   struct sigaction sa;
 
   if (0 == str_) {
-    WSREP_ERROR("Can't allocate command line of size: %zu", strlen(str_));
+    WSREP_ERROR("Can't allocate command line of size: 0");
     err_ = ENOMEM;
     return;
   }
